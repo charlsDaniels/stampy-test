@@ -26,6 +26,24 @@ class Dispatcher{
     UserController::getInstance()->register();
   }
 
+  static function user(){
+    UserController::getInstance()->user();
+  }
+
+  static function users(){
+    UserController::getInstance()->users();
+  }
+
+  static function userUpdate(){
+    UserController::getInstance()->userUpdate();
+  }
+
+  static function userDelete(){
+    UserController::getInstance()->userDelete();
+  }
+
+  
+
   // static function view_todo_list(){
   //   ToDoItemController::getInstance()->viewTodoList();
   // }

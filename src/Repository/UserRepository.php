@@ -31,12 +31,52 @@ class UserRepository extends PDORepository{
 
   }
 
-  public function getAllUsuarios(){
+   /* Update functions */
+  public function updateUser($userId, $lastName, $firstName, $email, $password, $username){
     $conn= $this->getConnection();
-    $query = $conn->prepare("SELECT * FROM usuario");
+    $query= $conn->prepare(
+      "UPDATE user
+        SET 
+          email=:email,
+          username=:username,
+          first_name=:first_name,
+          last_name=:last_name,
+          password=:password,
+          updated_at=:updated_at
+        WHERE id=:user_id"
+    );
+    $query->bindParam(":user_id", $userId);
+    $query->bindParam(":email", $email);
+    $query->bindParam(":username", $username);
+    $query->bindParam(":password", $password);
+    $dateNow= date('Y-m-d H:i:s');
+    $query->bindParam(":updated_at", $dateNow);
+    $query->bindParam(":first_name", $firstName);
+    $query->bindParam(":last_name", $lastName);
+    $query->execute();
+  }
+
+  public function removeUser($user_id){
+    $conn= $this->getConnection();
+    $query= $conn->prepare("DELETE FROM user WHERE id=:id");
+    $query->bindParam(":id", $user_id);
+    $query->execute();
+  }
+
+  public function getUser($id){
+    $conn= $this->getConnection();
+    $query = $conn->prepare("SELECT * FROM user WHERE id=:id");
+    $query->bindParam(":id",$id);
     $query->execute();
     return $query->fetchall();
-  } 
+  }
+
+  public function getUsers(){
+    $conn= $this->getConnection();
+    $query = $conn->prepare("SELECT * FROM user");
+    $query->execute();
+    return $query->fetchall();
+  }
 
   function checkIfExists($query, $data, $user_id=NULL){
     $conn= $this->getConnection();

@@ -9,25 +9,29 @@ class UserController extends MainController{
     self::$twig->show('view_login.html', $error);
   }
 
-  public function login(){
-    if(!isset($_SESSION['id'])){ //no tiene ya una sesión iniciada
-      if(isset($_POST['user']) && isset($_POST['pass'])){
-        $user= $_POST['user'];
-        $pass= $_POST['pass'];
-        if(!empty($_POST['user']) && !empty($_POST['pass'])){
-          $repo= new UserRepository();
-          $user= $repo->login($user, $pass);
-          if(!empty($user)) {
-            $this->startUserSession($user);
+  public function login() {
+    if(!isset($_SESSION['id'])) { //no tiene ya una sesión iniciada
+      if(isset($_POST['username']) && isset($_POST['password'])){
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        if(!empty($_POST['username']) && !empty($_POST['password'])){
+          $repo = new UserRepository();
+          $username = $repo->login($username, $password);
+          if(!empty($username)) {
+            $this->startUserSession($username);
             $this->redirectHome();
           }else{
-            $this->viewLogin(array("error"=>'Usuario o contraseña incorrectos'));
+            echo('Usuario o contraseña incorrectos');
+            //devolver a Login con el error
+            // $this->viewLogin(array("error"=>'Usuario o contraseña incorrectos'));
           }
         }else {
-          $this->viewLogin(array("error"=>'Faltó completar alguno de los datos'));
+          echo('Faltó completar alguno de los datos');
+          // $this->viewLogin(array("error"=>'Faltó completar alguno de los datos'));
         }
       }else {
-        $this->viewLogin(array("error"=>'Faltó completar alguno de los datos'));
+        echo('Faltó completar alguno de los datos');
+        // $this->viewLogin(array("error"=>'Faltó completar alguno de los datos'));
       }
     }
   }
@@ -48,33 +52,126 @@ class UserController extends MainController{
 
   public function register() {
 
-    $lastName = isset($_POST['last_name']) ? $_POST['last_name'] : '';
-    $firstName =  isset($_POST['first_name']) ? $_POST['first_name'] : '';
-    $email = isset($_POST['email']) ? $_POST['email'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
+    if(isset($_SESSION['id'])){//es un usuario logueado
 
-    $err = $this->isValidForm(
-      $lastName, 
-      $firstName, 
-      $email, 
-      $password, 
-      $username
-    );
+      $lastName = isset($_POST['last_name']) ? $_POST['last_name'] : '';
+      $firstName =  isset($_POST['first_name']) ? $_POST['first_name'] : '';
+      $email = isset($_POST['email']) ? $_POST['email'] : '';
+      $password = isset($_POST['password']) ? $_POST['password'] : '';
+      $username = isset($_POST['username']) ? $_POST['username'] : '';
 
-    if(empty($err)){
+      $err = $this->isValidForm(
+        $lastName, 
+        $firstName, 
+        $email, 
+        $password, 
+        $username
+      );
+
+      if(empty($err)){
+          $user_repo= new UserRepository();
+          if($user_repo->checkUserName($username)){
+            if($user_repo->checkEmail($email)) {
+              $user = $user_repo->newUser(
+                $lastName, 
+                $firstName, 
+                $email, 
+                $password, 
+                $username
+              );
+              echo('El usuario fue agregado exitosamente');
+              // $this->viewUsersList('success', 'El usuario fue agregado exitosamente');
+            }else {
+              echo('Se produjo un error: el email ingresado ya existe');
+              // $this->viewUsersList('error', 'Se produjo un error: el email ingresado ya existe');
+            }
+          }else {
+            echo('Se produjo un error: el nombre de usuario ingresado ya existe');
+            // $this->viewUsersList('error', 'Se produjo un error: el nombre de usuario ingresado ya existe');
+          }
+      }else {
+        echo($err);
+        // $this->viewUsersList('error', $err);
+      }    
+    }
+
+  }
+
+  public function user(){
+    // if(isset($_SESSION['id'])){//es un usuario logueado
+      $_GET['action']='';
+      $user_repo = new UserRepository();
+      $user_id = $_POST["id"];
+      $data = array();
+      $data['user'] = $user_repo->getUser($user_id);
+      if(!empty($data)){
+          echo(json_encode($data));
+      }else {
+        echo('error');
+        // $this->viewUsersList('error', 'Se produjo un error');
+      }
+    // }else {
+    //   echo('Debe iniciar sesión');
+    // }
+  }
+
+  public function users($state=NULL, $msg="") {
+    // if(isset($_SESSION['id'])){//es un usuario logueado
+
+        $user_repo = new UserRepository();
+        $data = array();
+
+        if(!is_null($state)){
+          $data[$state]= $msg;
+        }
+
+        $users= $user_repo->getAllUsuarios();
+        $data['users']= $users;
+
+        echo(json_encode($data));
+        die;
+        // $this::$twig->show('list_users.html', $data);
+    // }else{
+      $this->redirectHome();
+    // }
+  }
+
+  public function userUpdate(){
+    // if(isset($_SESSION['id'])){ //es un usuario logueado
+      $userId = isset($_POST['user_id']) ? $_POST['user_id'] : '';
+      $lastName = isset($_POST['last_name']) ? $_POST['last_name'] : '';
+      $firstName =  isset($_POST['first_name']) ? $_POST['first_name'] : '';
+      $email = isset($_POST['email']) ? $_POST['email'] : '';
+      $password = isset($_POST['password']) ? $_POST['password'] : '';
+      $username = isset($_POST['username']) ? $_POST['username'] : '';
+
+      $err = $this->isValidForm(
+        $lastName, 
+        $firstName, 
+        $email, 
+        $password, 
+        $username
+      );
+    
+      if(empty($err)){
         $user_repo= new UserRepository();
-        if($user_repo->checkUserName($username)){
-          if($user_repo->checkEmail($email)) {
-            $user = $user_repo->newUser(
-              $lastName, 
-              $firstName, 
-              $email, 
-              $password, 
-              $username
-            );
-            echo('El usuario fue agregado exitosamente');
-            // $this->viewUsersList('success', 'El usuario fue agregado exitosamente');
+        if ($user_repo->getUser($userId)) {
+
+          if($user_repo->checkUserName($username)){
+            if($user_repo->checkEmail($email)) {
+
+              $user = $user_repo->updateUser(
+                $userId,
+                $lastName, 
+                $firstName, 
+                $email, 
+                $password, 
+                $username
+              );
+
+              echo('Usuario actualizado.');
+              // $this->viewUsersList('success', 'El usuario se actualizó exitosamente');
+                
           }else {
             echo('Se produjo un error: el email ingresado ya existe');
             // $this->viewUsersList('error', 'Se produjo un error: el email ingresado ya existe');
@@ -83,10 +180,33 @@ class UserController extends MainController{
           echo('Se produjo un error: el nombre de usuario ingresado ya existe');
           // $this->viewUsersList('error', 'Se produjo un error: el nombre de usuario ingresado ya existe');
         }
-    }else {
+      }else {
+        echo('Se produjo un error: no existe el usuario');
+      }   
+    }else {//error con algun campo del form
       echo($err);
       // $this->viewUsersList('error', $err);
-    }    
+    }
+      
+    // }else {
+    //   $this->redirectHome();
+    // }
+  }
+
+  public function userDelete() {
+    // if(isset($_SESSION['id'])){ //es un usuario logueado
+      // if($_POST['id_user'] != $_SESSION['id']){ //el que quiere eliminar no es él mismo
+        $user_repo= new UserRepository();
+        $user_repo->removeUser($_POST['id_user']);
+        echo('El usuario fue eliminado');
+        // $this->viewUsersList('success', 'El usuario fue eliminado');
+      // }else{
+      //   echo('Se produjo un error: no puedes eliminar a ese usuario');
+      //   // $this->viewUsersList('error', 'Se produjo un error: no puedes eliminar a ese usuario');
+      // }
+    // }else {
+    //   $this->redirectHome();
+    // }
 
   }
 
