@@ -1,0 +1,32 @@
+body{
+  font-family: 'Open Sans', sans-serif;
+  background:white;
+  margin: 0 auto 0 auto;  
+  width:100%; 
+  text-align:center;
+  margin: 20px 0px 20px 0px;   
+}
+
+p{
+  font-size:15px;
+  text-decoration: none;
+  color:#ffffff;
+}
+
+h1{
+  font-size:1.5em;
+  color:#525252;
+}
+
+.box{
+  background:white;
+  width:300px;
+  border-radius:6px;
+  margin: 0 auto 0 auto;
+  padding:0px 0px 70px 0px;
+  border: #009579 4px solid; 
+}
+
+.margin-top {
+  margin-top: 10%;
+}

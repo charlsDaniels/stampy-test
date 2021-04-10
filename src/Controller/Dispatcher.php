@@ -22,11 +22,15 @@ class Dispatcher{
     UserController::getInstance()->logout();
   }
 
-  static function register(){
-    UserController::getInstance()->register();
+  static function view_user_new(){
+    UserController::getInstance()->viewUserNew();
   }
 
-  static function user(){
+  static function user_new(){
+    UserController::getInstance()->userNew();
+  }
+
+  static function user_edit(){
     UserController::getInstance()->user();
   }
 
@@ -34,11 +38,11 @@ class Dispatcher{
     UserController::getInstance()->users();
   }
 
-  static function userUpdate(){
+  static function user_update(){
     UserController::getInstance()->userUpdate();
   }
 
-  static function userDelete(){
+  static function user_delete(){
     UserController::getInstance()->userDelete();
   }
 

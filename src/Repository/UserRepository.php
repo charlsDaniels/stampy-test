@@ -6,7 +6,7 @@ class UserRepository extends PDORepository{
 
   public function login($user, $pass){
     $conn= $this->getConnection();
-    $query= $conn->prepare("SELECT * FROM usuario WHERE usuario=:user AND clave=:pass");
+    $query= $conn->prepare("SELECT * FROM user WHERE username=:user AND password=:pass");
     $query->bindParam(":user", $user);
     $query->bindParam(":pass", $pass);
     $query->execute();
@@ -68,14 +68,14 @@ class UserRepository extends PDORepository{
     $query = $conn->prepare("SELECT * FROM user WHERE id=:id");
     $query->bindParam(":id",$id);
     $query->execute();
-    return $query->fetchall();
+    return $query->fetch();
   }
 
   public function getUsers(){
     $conn= $this->getConnection();
     $query = $conn->prepare("SELECT * FROM user");
     $query->execute();
-    return $query->fetchall();
+    return $query->fetchAll();
   }
 
   function checkIfExists($query, $data, $user_id=NULL){
@@ -108,4 +108,4 @@ class UserRepository extends PDORepository{
 
 }
 
- ?>
+?>

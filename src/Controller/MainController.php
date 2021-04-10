@@ -1,24 +1,28 @@
 <?php
 
+require_once('src/Controller/Dispatcher.php');
+
 class MainController {
 
     protected static $instance;
-    protected static $twig;
 
     public static function getInstance() {
         if (!isset(static::$instance)) {
             static::$instance = new static();
-            // static::$twig = new TwigRenderer();
         }
         return static::$instance;
     }
 
-    public function viewHome($params = array()){
-      self::$twig->show('home.html');
+    public function dispatch($action) {
+      Dispatcher::$action();
     }
 
-    public function redirectHome(){
-      header('Location: /', true, 301 );
+    public function render($template, $params = array()) {
+      require_once('templates/'.$template.'.php');
+    }
+
+    public function isLoggedUser() {
+      return isset($_SESSION['id']);
     }
 
 }
