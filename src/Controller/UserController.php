@@ -9,27 +9,24 @@ class UserController extends MainController {
   }
 
   public function login() {
-    // if(!$this->isLoggedUser()) { //no tiene ya una sesión iniciada
-      if(isset($_POST['username']) && isset($_POST['password'])){
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        if(!empty($_POST['username']) && !empty($_POST['password'])){
-          $repo = new UserRepository();
-          $user = $repo->login($username, $password);
-          if(!empty($user)) {
-            $this->startUserSession($user);
-            $_GET['action'] = ''; 
-            $this->dispatch('users');
-          }else{
-            $this->viewLogin(array("error" => 'Usuario o contraseña incorrectos'));
-          }
-        }else {
-          $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
+    if ($this->postElementsCheck(array('username', 'password'))) {
+      $username = $_POST['username'];
+      $password = $_POST['password'];
+      if(!empty($_POST['username']) && !empty($_POST['password'])){
+        $repo = new UserRepository();
+        $user = $repo->login($username, $password);
+        if(!empty($user)) {
+          $this->startUserSession($user);
+          $this->users();
+        }else{
+          $this->viewLogin(array("error" => 'Usuario o contraseña incorrectos'));
         }
       }else {
         $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
       }
-    // }
+    }else {
+      $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
+    }
   }
 
   private function startUserSession($user){
@@ -43,7 +40,7 @@ class UserController extends MainController {
   public function logout(){
     session_destroy();
     $_SESSION= array();
-    $this->dispatch('login');
+    $this->viewLogin();
   }
 
   public function viewUserNew($params = array("error" => '')) {
@@ -79,7 +76,7 @@ class UserController extends MainController {
                 $password, 
                 $username
               );
-              $this->dispatch('users');
+              $this->users();
             }else {
               $this->viewUserNew(array('error' => 'Se produjo un error: el email ingresado ya existe'));
             }
@@ -109,18 +106,16 @@ class UserController extends MainController {
     }
   }
 
-  public function users($state=NULL, $msg="") {
+  public function users() {
     if($this->isLoggedUser()) { //es un usuario logueado
 
       $user_repo = new UserRepository();
       $data = array();
 
-      if(!is_null($state)){
-        $data[$state]= $msg;
-      }
-
       $users= $user_repo->getUsers();
+
       $data['users'] = $users;
+      $data['loggedUserId'] = $_SESSION['id'];
 
       $this->render('users', $data);
     }else{
@@ -165,7 +160,7 @@ class UserController extends MainController {
                 $username
               );
 
-              $this->dispatch('users');
+              $this->users();
               
             }else {
               $this->render('user_edit',
@@ -206,19 +201,16 @@ class UserController extends MainController {
 
   public function userDelete() {
     if($this->isLoggedUser()){ //es un usuario logueado
-      if($_POST['id_user'] != $_SESSION['id']){ //el que quiere eliminar no es él mismo
+      if($_POST['user_id'] != $_SESSION['id']){ //el que quiere eliminar no es él mismo
         $user_repo= new UserRepository();
-        $user_repo->removeUser($_POST['id_user']);
-        
-        // $this->viewUsersList('success', 'El usuario fue eliminado');
+        $user_repo->removeUser($_POST['user_id']);
+        $this->users();
       }else{
-        echo('Se produjo un error: no puedes eliminar a ese usuario');
-        // $this->viewUsersList('error', 'Se produjo un error: no puedes eliminar a ese usuario');
+        $this->users();
       }
     }else {
       $this->viewLogin();
     }
-
   }
 
   public function postElementsCheck($elements){

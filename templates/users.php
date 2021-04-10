@@ -62,9 +62,13 @@
 
                 <br>
 
-                <button id="btn-user-delete" class="button is-danger" title="Eliminar">
-                  <span class="button__text">Eliminar</span>
-                </button>
+                <?php if ($user["id"] != $params["loggedUserId"]): ?>
+
+                  <button name="btn-user-delete" data-user_id="<?php echo $user["id"] ?>" class="button is-danger" title="Eliminar">
+                    <span class="button__text">Eliminar</span>
+                  </button>
+
+                <?php endif; ?>
               
               </td>
             </tr>
