@@ -1,12 +1,3 @@
-input[type=text], input[type=password] {
-  width: 75%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
 .styled-table {
   border-collapse: collapse;
   margin: 25px 0;
@@ -48,35 +39,4 @@ table.center {
   width:70%; 
   margin-left:15%; 
   margin-right:15%;
-}
-
-.button {
-  position: relative;
-  padding: 8px 16px;
-  background: #009579;
-  border: none;
-  outline: none;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.button:active {
-  background: #007a63;
-}
-
-.button__text {
-  font: normal 10px;
-  color: #ffffff;
-}
-
-.text-center {
-  text-align: center;
-}
-
-p.is-danger {
-  color: #ee1a1a;
-}
-
-button.is-danger {
-  background-color: #ee1a1a;
 }

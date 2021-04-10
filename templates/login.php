@@ -2,8 +2,7 @@
 <html lang="es" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link href="assets/styles/style.css" rel="stylesheet" media="screen" type="text/css"/>
-    <link href="assets/styles/login.css" rel="stylesheet" media="screen" type="text/css"/>
+    <link href="assets/styles/base.css" rel="stylesheet" media="screen" type="text/css"/>
     <title>Login</title>
   </head>
   <body>

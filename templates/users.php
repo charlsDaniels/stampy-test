@@ -2,18 +2,23 @@
 <html lang="es" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link href="assets/styles/style.css" rel="stylesheet" media="screen" type="text/css"/>
-    <link href="assets/styles/login.css" rel="stylesheet" media="screen" type="text/css"/>
-
+    <link href="assets/styles/base.css" rel="stylesheet" media="screen" type="text/css"/>
+    <link href="assets/styles/navbar.css" rel="stylesheet" media="screen" type="text/css"/>
+    <link href="assets/styles/table.css" rel="stylesheet" media="screen" type="text/css"/>
+    <link href="assets/styles/modal.css" rel="stylesheet" media="screen" type="text/css"/>
+    <script></script>
     <title>Users</title>
   </head>
+
   <body>
 
-    <div class="text-center">
-      <h1>Usuarios del sistema</h1>
-    </div>
+    <?php include_once("templates/header/navbar.html"); ?>
 
-    <div>
+    <div class="text-center">
+      
+      <h1 class="section-header">Usuarios del sistema</h1>
+
+      <br>
 
       <a href='./?action=view_user_new' class="button" title="Nuevo Usuario">
         <span class="button__text">Nuevo usuario</span>
@@ -47,7 +52,7 @@
 
                 <form action="./?action=user_edit" method="post">
 
-                  <input type="hidden" name="id" value="<?php echo $user["id"] ?>">
+                  <input type="hidden" id="user_id" name="id" value="<?php echo $user["id"] ?>">
 
                   <button type="submit" class="button" title="Editar">
                     <span class="button__text">Editar</span>
@@ -57,15 +62,19 @@
 
                 <br>
 
-                <button class="button is-danger" title="Eliminar">
+                <button id="btn-user-delete" class="button is-danger" title="Eliminar">
                   <span class="button__text">Eliminar</span>
                 </button>
               
-                </td>
+              </td>
             </tr>
           <?php endforeach; ?>
         </tbody>
       </table>
+
+      <?php include_once("templates/modals/modal.html"); ?>
+      <script src="assets/js/script.js"></script>
+
     </div>
   </body>
 </html>

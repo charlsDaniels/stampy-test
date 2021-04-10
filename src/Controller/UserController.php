@@ -21,13 +21,13 @@ class UserController extends MainController {
             $_GET['action'] = ''; 
             $this->dispatch('users');
           }else{
-            $this->render('login', array("error" => 'Usuario o contraseña incorrectos'));
+            $this->viewLogin(array("error" => 'Usuario o contraseña incorrectos'));
           }
         }else {
-          $this->render('login', array("error" => 'Faltó completar alguno de los datos'));
+          $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
         }
       }else {
-        $this->render('login', array("error" => 'Faltó completar alguno de los datos'));
+        $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
       }
     // }
   }
@@ -43,7 +43,7 @@ class UserController extends MainController {
   public function logout(){
     session_destroy();
     $_SESSION= array();
-    $this->dipatch('home');
+    $this->dispatch('login');
   }
 
   public function viewUserNew($params = array("error" => '')) {
@@ -81,13 +81,13 @@ class UserController extends MainController {
               );
               $this->dispatch('users');
             }else {
-              $this->render('user_new', array('error' => 'Se produjo un error: el email ingresado ya existe'));
+              $this->viewUserNew(array('error' => 'Se produjo un error: el email ingresado ya existe'));
             }
           }else {
-            $this->render('user_new', array('error' => 'Se produjo un error: el nombre de usuario ingresado ya existe'));
+            $this->viewUserNew(array('error' => 'Se produjo un error: el nombre de usuario ingresado ya existe'));
           }
       }else {
-        $this->render('user_new', array('error' => $err));
+        $this->viewUserNew(array('error' => $err));
       }    
     }
 
@@ -105,7 +105,7 @@ class UserController extends MainController {
         $this->render('user_edit', $data);
       }
     }else {
-      $this->render('view_login');
+      $this->viewLogin();
     }
   }
 
@@ -124,7 +124,7 @@ class UserController extends MainController {
 
       $this->render('users', $data);
     }else{
-      $this->render('view_login');
+      $this->viewLogin();
     }
   }
 
@@ -200,7 +200,7 @@ class UserController extends MainController {
         );
       } 
     }else {
-      $this->render('view_login');
+      $this->viewLogin();
     }
   }
 
@@ -209,14 +209,14 @@ class UserController extends MainController {
       if($_POST['id_user'] != $_SESSION['id']){ //el que quiere eliminar no es él mismo
         $user_repo= new UserRepository();
         $user_repo->removeUser($_POST['id_user']);
-        echo('El usuario fue eliminado');
+        
         // $this->viewUsersList('success', 'El usuario fue eliminado');
       }else{
         echo('Se produjo un error: no puedes eliminar a ese usuario');
         // $this->viewUsersList('error', 'Se produjo un error: no puedes eliminar a ese usuario');
       }
     }else {
-      $this->render('view_login');
+      $this->viewLogin();
     }
 
   }
@@ -229,13 +229,6 @@ class UserController extends MainController {
       $key = $elements[$i++];
       $ok = (isset($_POST[$key]) && (!empty($_POST[$key]) || is_numeric($_POST[$key])));
     }
-
-    //para debugear
-    //   if(!$ok){
-    //   echo('Falta parámetro: '.$elements[--$i]);
-    //   die();
-    // }
-
     return $ok;
   }
 

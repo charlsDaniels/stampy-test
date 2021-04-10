@@ -2,7 +2,6 @@
 
 require_once './src/Controller/MainController.php';
 require_once './src/Controller/UserController.php';
-// require_once './src/Controller/ToDoItemController.php';
 
 class Dispatcher{
 
@@ -45,19 +44,5 @@ class Dispatcher{
   static function user_delete(){
     UserController::getInstance()->userDelete();
   }
-
-  
-
-  // static function view_todo_list(){
-  //   ToDoItemController::getInstance()->viewTodoList();
-  // }
-
-  // static function view_add_todo_item(){
-  //   ToDoItemController::getInstance()->viewAddToDoItem();
-  // }
-
-  // static function add_todo_item(){
-  //   ToDoItemController::getInstance()->addToDoItem();
-  // }
 
 }
