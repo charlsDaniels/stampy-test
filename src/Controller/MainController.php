@@ -13,8 +13,8 @@ class MainController {
         return static::$instance;
     }
 
-    public function dispatch($action) {
-      Dispatcher::$action();
+    public function redirectTo($action) {
+      header("Location: ?action=".$action, true, 301);
     }
 
     public function render($template, $params = array()) {

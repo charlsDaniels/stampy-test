@@ -8,22 +8,27 @@ class UserController extends MainController {
     $this->render('login', $params);
   }
 
+  public function viewUserNew($params = array("error" => '')) {
+    $this->render('user_new', $params);
+  }
+
   public function login() {
     if ($this->postElementsCheck(array('username', 'password'))) {
       $username = $_POST['username'];
       $password = $_POST['password'];
-      if(!empty($_POST['username']) && !empty($_POST['password'])){
-        $repo = new UserRepository();
-        $user = $repo->login($username, $password);
-        if(!empty($user)) {
+      $repo = new UserRepository();
+      $user = $repo->login($username);
+      if (!empty($user)) {
+        if (password_verify($password, $user['password'])){
           $this->startUserSession($user);
-          $this->users();
-        }else{
-          $this->viewLogin(array("error" => 'Usuario o contraseña incorrectos'));
+          $this->redirectTo('users');
+        } else {
+          $this->viewLogin(array("error" => 'Contraseña incorrecta'));
         }
-      }else {
-        $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
+      }else{
+        $this->viewLogin(array("error" => 'No existe ese usuario'));
       }
+    
     }else {
       $this->viewLogin(array("error" => 'Faltó completar alguno de los datos'));
     }
@@ -43,10 +48,7 @@ class UserController extends MainController {
     $this->viewLogin();
   }
 
-  public function viewUserNew($params = array("error" => '')) {
-    $this->render('user_new', $params);
-  }
-
+  //ejecuta la creación de un nuevo usuario.
   public function userNew() {
 
     if($this->isLoggedUser()) { //es un usuario logueado
@@ -73,10 +75,10 @@ class UserController extends MainController {
                 $lastName, 
                 $firstName, 
                 $email, 
-                $password, 
+                password_hash($password, PASSWORD_DEFAULT),
                 $username
               );
-              $this->users();
+              $this->redirectTo('users');
             }else {
               $this->viewUserNew(array('error' => 'Se produjo un error: el email ingresado ya existe'));
             }
@@ -90,6 +92,7 @@ class UserController extends MainController {
 
   }
 
+  //retorna un usuario a través de su id
   public function user($data = array("error" => '')) {
     if($this->isLoggedUser()) { //es un usuario logueado
       $user_repo = new UserRepository();
@@ -105,7 +108,8 @@ class UserController extends MainController {
       $this->viewLogin();
     }
   }
-
+  
+  //retorna todos los usuarios del sistema
   public function users() {
     if($this->isLoggedUser()) { //es un usuario logueado
 
@@ -123,8 +127,10 @@ class UserController extends MainController {
     }
   }
 
+  //ejecuta la actualización de un usuario
   public function userUpdate(){
-    if ($this->isLoggedUser()) { 
+    if ($this->isLoggedUser()) {
+
       $userId = isset($_POST['id']) ? $_POST['id'] : '';
       $lastName = isset($_POST['last_name']) ? $_POST['last_name'] : '';
       $firstName =  isset($_POST['first_name']) ? $_POST['first_name'] : '';
@@ -156,11 +162,10 @@ class UserController extends MainController {
                 $lastName, 
                 $firstName, 
                 $email, 
-                $password, 
                 $username
               );
 
-              $this->users();
+              $this->redirectTo('users');
               
             }else {
               $this->render('user_edit',
@@ -204,7 +209,7 @@ class UserController extends MainController {
       if($_POST['user_id'] != $_SESSION['id']){ //el que quiere eliminar no es él mismo
         $user_repo= new UserRepository();
         $user_repo->removeUser($_POST['user_id']);
-        $this->users();
+        $this->redirectTo('users');
       }else{
         $this->users();
       }
@@ -240,8 +245,8 @@ class UserController extends MainController {
       if ( ( strlen($username) < 6 ) || ( strlen($username) > 20 ) || (!ctype_alnum($username) ) ){
         $err.= 'error en nombre de usuario: mínimo 6 caracteres alfanuméricos, máximo 20. ';
       }
-      if ( ( strlen($password) < 6 ) || ( strlen($password) > 20 ) ) {
-        $err.= 'error en password: mínimo 8 caracteres, máximo 20. ';
+      if ( ( strlen($password) < 6 ) ) {
+        $err.= 'error en password: mínimo 8 caracteres. ';
       }
     }else {
       $err.= 'Se produjo un error: faltó completar alguno/s de los datos. ';

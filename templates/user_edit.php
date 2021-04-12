@@ -35,8 +35,8 @@
         <label for="username">Nombre de usuario</label>
         <input id="username" type="text" name="username" value="<?php echo $params['user']['username'] ?>" required>
         
-        <label for="password">Contraseña</label>
-        <input id="password" type="text" name="password" value="<?php echo $params['user']['password'] ?>" required>
+        <!-- <label for="password">Contraseña</label> -->
+        <input id="password" type="hidden" name="password" value="<?php echo $params['user']['password'] ?>" required>
 
         <button class="button margin-top" type="submit">
           <span class="button__text">Aceptar</span>

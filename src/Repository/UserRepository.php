@@ -2,13 +2,12 @@
 
 require_once './src/Repository/PDORepository.php';
 
-class UserRepository extends PDORepository{
-
-  public function login($user, $pass){
+class UserRepository extends PDORepository {
+  
+  public function login($user){
     $conn= $this->getConnection();
-    $query= $conn->prepare("SELECT * FROM user WHERE username=:user AND password=:pass");
+    $query= $conn->prepare("SELECT * FROM user WHERE username=:user");
     $query->bindParam(":user", $user);
-    $query->bindParam(":pass", $pass);
     $query->execute();
     return $query->fetch();
   }
@@ -16,8 +15,9 @@ class UserRepository extends PDORepository{
   /* Create function */
   public function newUser($lastName, $firstName, $email, $password, $username){
     $conn= $this->getConnection();
-    $query= $conn->prepare("INSERT INTO user(email, username, password, created_at, updated_at, first_name, last_name)
-                            VALUES(:email, :username, :password, :created_at, :updated_at, :first_name, :last_name)");
+    $query= $conn->prepare(
+      "INSERT INTO user(email, username, password, created_at, updated_at, first_name, last_name)
+        VALUES(:email, :username, :password, :created_at, :updated_at, :first_name, :last_name)");
     $query->bindParam(":email", $email);
     $query->bindParam(":username", $username);
     $query->bindParam(":password", $password);
@@ -32,23 +32,21 @@ class UserRepository extends PDORepository{
   }
 
    /* Update functions */
-  public function updateUser($userId, $lastName, $firstName, $email, $password, $username){
+  public function updateUser($userId, $lastName, $firstName, $email, $username){
     $conn= $this->getConnection();
     $query= $conn->prepare(
       "UPDATE user
-        SET 
+        SET
           email=:email,
           username=:username,
           first_name=:first_name,
           last_name=:last_name,
-          password=:password,
           updated_at=:updated_at
         WHERE id=:user_id"
     );
     $query->bindParam(":user_id", $userId);
     $query->bindParam(":email", $email);
     $query->bindParam(":username", $username);
-    $query->bindParam(":password", $password);
     $dateNow= date('Y-m-d H:i:s');
     $query->bindParam(":updated_at", $dateNow);
     $query->bindParam(":first_name", $firstName);
