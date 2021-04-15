@@ -31,7 +31,23 @@ class UserRepository extends PDORepository {
 
   }
 
-   /* Update functions */
+  /* Update functions */
+  public function changePassword($userId, $password) {
+    $conn= $this->getConnection();
+    $query= $conn->prepare(
+      "UPDATE user
+        SET
+          password=:pass,
+          updated_at=:updated_at
+        WHERE id=:id"
+    );
+    $query->bindParam(":id", $userId);
+    $query->bindParam(":pass", $password);
+    $dateNow= date('Y-m-d H:i:s');
+    $query->bindParam(":updated_at", $dateNow);
+    $query->execute();
+  }
+
   public function updateUser($userId, $lastName, $firstName, $email, $username){
     $conn= $this->getConnection();
     $query= $conn->prepare(

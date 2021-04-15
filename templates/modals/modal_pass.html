@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+  <div class="modal" id="modal-pass">
+    <div class="modal-bg modal-exit"></div>
+    <div class="modal-container">
+
+      <h1>Cambiar contraseña</h1>
+
+      <div>
+
+        <div class="box">
+          <form action="./?action=user_pass_change" method="post">
+                   
+              <label for="pass_old">Contraseña actual</label>
+              <input id="pass_old" type="text" name="pass_old" required>
+              
+              <label for="pass_new">Contraseña nueva</label>
+              <input id="pass_new" type="text" name="pass_new" required>
+
+              <button id="btn-confirm-pass-change" class="button is-danger modal-close" title="Confirmar">
+                <span class="button__text">Confirmar</span>
+              </button>
+      
+              <button class="button modal-close modal-exit" title="Cancelar">
+                <span class="button__text">Cancelar</span>
+              </button>
+      
+          </form>  
+        </div>
+
+        <br>
+
+      </div>
+
+    </div>
+  </div>
+
+</html>

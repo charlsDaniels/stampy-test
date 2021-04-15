@@ -6,7 +6,6 @@
     <link href="assets/styles/navbar.css" rel="stylesheet" media="screen" type="text/css"/>
     <link href="assets/styles/table.css" rel="stylesheet" media="screen" type="text/css"/>
     <link href="assets/styles/modal.css" rel="stylesheet" media="screen" type="text/css"/>
-    <script></script>
     <title>Users</title>
   </head>
 
@@ -76,8 +75,8 @@
         </tbody>
       </table>
 
-      <?php include_once("templates/modals/modal.html"); ?>
-      <script src="assets/js/script.js"></script>
+      <?php include_once("templates/modals/modal_delete.html"); ?>
+      <script src="assets/js/modal_delete.js"></script>
 
     </div>
   </body>

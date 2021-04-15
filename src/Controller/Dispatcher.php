@@ -33,6 +33,10 @@ class Dispatcher{
     UserController::getInstance()->user();
   }
 
+  static function user_pass_change(){
+    UserController::getInstance()->userPassChange();
+  }
+
   static function users(){
     UserController::getInstance()->users();
   }

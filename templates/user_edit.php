@@ -4,15 +4,16 @@
     <meta charset="utf-8">
     <link href="assets/styles/base.css" rel="stylesheet" media="screen" type="text/css"/>
     <link href="assets/styles/navbar.css" rel="stylesheet" media="screen" type="text/css"/>
+    <link href="assets/styles/modal.css" rel="stylesheet" media="screen" type="text/css"/>
     <title>Login</title>
   </head>
   <body>
 
     <?php include_once("templates/header/navbar.html"); ?>
 
-    <?php if ($params["error"]): ?>
+    <?php if ($params["msg"]): ?>
 
-      <p class="is-danger"><?php echo $params["error"] ?></p>
+      <p class="is-danger"><?php echo $params["msg"] ?></p>
       
     <?php endif; ?>
 
@@ -35,9 +36,12 @@
         <label for="username">Nombre de usuario</label>
         <input id="username" type="text" name="username" value="<?php echo $params['user']['username'] ?>" required>
         
-        <!-- <label for="password">Contraseña</label> -->
-        <input id="password" type="hidden" name="password" value="<?php echo $params['user']['password'] ?>" required>
-
+        <a href="#" id="btn-user-pass-change" data-user_id="<?php echo $params['user']['id'] ?>">
+          Cambiar contraseña
+        </a>
+          
+        <br>
+        
         <button class="button margin-top" type="submit">
           <span class="button__text">Aceptar</span>
         </button>
@@ -53,6 +57,9 @@
       </a>
 
     </div>
-      
+
+    <?php include_once("templates/modals/modal_pass.html"); ?>
+    <script src="assets/js/modal_pass.js"></script>
+
   </body>
 </html>
