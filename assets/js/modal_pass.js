@@ -20,23 +20,22 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.remove('open');
       });
     });
-  });
 
-  let userId = userPassChangeBtn.dataset.user_id;
+    let userId = userPassChangeBtn.dataset.user_id;
 
-  //busco el form que es necesario enviar para eliminar el usuario.
-  let confirmPassChangeBtn = document.getElementById('btn-confirm-pass-change');
-
-  //hago el submit del formulario para eliminar el usuario.
-  confirmPassChangeBtn.addEventListener('click', function(event) {
-    event.preventDefault();
+    //busco el form que es necesario enviar para eliminar el usuario.
+    let confirmPassChangeBtn = document.getElementById('btn-confirm-pass-change');
 
     let form = confirmPassChangeBtn.parentNode;
-    
+      
     //agrego un input hidden con el id del usuario a eliminar como value.
     form.innerHTML += `<input type="hidden" name="user_id" value=${userId}>`
     form.innerHTML = form.innerHTML
-     
-    form.submit()
-  })      
+
+    //hago el submit del formulario para eliminar el usuario.
+    confirmPassChangeBtn.addEventListener('click', function(event) {
+      event.preventDefault();      
+      form.submit()
+    })      
+  });
 });

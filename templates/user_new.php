@@ -22,7 +22,7 @@
       <form action="./?action=user_new" method="post">
 
         <label for="last_name">Apellido</label>
-        <input id="last_name" type="text" name="last_name" value="<?php echo $params["prevData"]["last_name"] ? $params["prevData"]["last_name"] : '' ?>" required>
+        <input id="last_name" type="text" name="last_name" required>
         
         <label for="first_name">Nombre</label>
         <input id="first_name" type="text" name="first_name" required>

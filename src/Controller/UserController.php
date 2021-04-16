@@ -139,26 +139,26 @@ class UserController extends MainController {
   }
 
   public function userPassChange() {
+    
+    $userId = $_POST["user_id"];
+    $repo = new UserRepository();
+    $user = $repo->getUser($userId);
+    
+    if (!empty($user)) {
+      
+      $this->prepareData(array('pass_new'));
 
-    $this->prepareData(array('pass_new'));
+      if ($this->postElementsCheck(array('pass_old', 'pass_new'))) {
+        $passOld = $_POST['pass_old'];
+        $passNew = $_POST['pass_new'];     
 
-    if ($this->postElementsCheck(array('pass_old', 'pass_new', 'user_id'))) {     
-
-      $passOld = $_POST['pass_old'];
-      $passNew = $_POST['pass_new'];
-      $userId = $_POST["user_id"];
-
-      $repo = new UserRepository();
-      $user = $repo->getUser($userId);    
-
-      if (!empty($user)) {
         if (password_verify($passOld, $user['password'])) {
-            if ( ( strlen($passNew) >= 6 ) ) {
-              $hashed_pass = password_hash($passNew, PASSWORD_DEFAULT);
-              $repo->changePassword($userId, $hashed_pass);
-              $this->user(array(
-                "msg" => "La contraseña se ha modificado exitosamente.",
-                "id" => $userId
+          if ( ( strlen($passNew) >= 6 ) ) {
+            $hashed_pass = password_hash($passNew, PASSWORD_DEFAULT);
+            $repo->changePassword($userId, $hashed_pass);
+            $this->user(array(
+              "msg" => "La contraseña se ha modificado exitosamente.",
+              "id" => $userId
               )
             );
           } else {
@@ -176,47 +176,49 @@ class UserController extends MainController {
           );
         }
       }else {
-        echo 'No existe ese usuario';
+        $this->user(array(
+          'msg' => 'Se produjo un error: Faltan parámetros',
+          'id' => $userId
+          )
+        );
       }
     }else {
-      $this->render('user_edit', 
-        array(
-          'msg' => 'Se produjo un error: Faltan parámetros',
-          'user' => $user
-        )
-      );
+      echo 'No existe ese usuario';
     }
   }
 
   //ejecuta la actualización de un usuario
   public function userUpdate(){
     if ($this->isLoggedUser()) {
-      
-      $this->prepareData(array('last_name', 'first_name', 'email', 'username'));
 
-      if ($this->postElementsCheck(array('last_name', 'first_name', 'email', 'username'))) {
+      $userId = $_POST['id'];
+      $user_repo= new UserRepository();
+      $user = $user_repo->getUser($userId);
 
-        $userId = $_POST['id'];
-        $lastName = $_POST['last_name'];
-        $firstName = $_POST['first_name'];
-        $email = $_POST['email'];
-        $username = $_POST['username'];
+      if ($user) {
+          
+        $this->prepareData(array('last_name', 'first_name', 'email', 'username'));
+
+        if ($this->postElementsCheck(array('last_name', 'first_name', 'email', 'username'))) {
+
+          $lastName = $_POST['last_name'];
+          $firstName = $_POST['first_name'];
+          $email = $_POST['email'];
+          $username = $_POST['username'];
+        
+          $err = $this->isValidForm(
+            $lastName, 
+            $firstName, 
+            $email, 
+            $username
+          );
+    
+          $user_repo= new UserRepository();
+    
+          $user = $user_repo->getUser($userId);
+    
+          if (empty($err)) {
       
-        $err = $this->isValidForm(
-          $lastName, 
-          $firstName, 
-          $email, 
-          $username
-        );
-  
-        $user_repo= new UserRepository();
-  
-        $user = $user_repo->getUser($userId);
-  
-        if (empty($err)) {
-  
-          if ($user) {
-  
             if($user_repo->checkUserName($username, $userId)){
               if($user_repo->checkEmail($email, $userId)) {
   
@@ -249,15 +251,15 @@ class UserController extends MainController {
           }else {
             $this->render('user_edit', 
               array(
-                'msg' => 'Se produjo un error: No existe el usuario',
+                'msg' => $err,
                 'user' => $user
               )
             );
           }   
         }else {
           $this->render('user_edit', 
-            array(
-              'msg' => $err,
+              array(
+              'msg' => 'Se produjo un error: Faltan parámetros',
               'user' => $user
             )
           );
@@ -265,7 +267,7 @@ class UserController extends MainController {
       } else {
         $this->render('user_edit', 
           array(
-            'msg' => 'Se produjo un error: Faltan parámetros',
+            'msg' => 'Se produjo un error: No existe el usuario',
             'user' => $user
           )
         );
@@ -289,17 +291,6 @@ class UserController extends MainController {
     }
   }
 
-  public function postElementsCheck($elements){
-    $i = 0;
-    $i_max = count($elements);
-    $ok = ($i < $i_max);
-    while($ok && $i < $i_max){
-      $key = $elements[$i++];
-      $ok = (isset($_POST[$key]) && (!empty($_POST[$key]) || is_numeric($_POST[$key])));
-    }
-    return $ok;
-  }
-
   public function isValidForm($last_name, $first_name, $email, $username, $password = null){
     $err='';
     if (!(preg_match("/^[a-z ñáéíóú]{2,60}+$/i", $last_name))) {
@@ -320,18 +311,6 @@ class UserController extends MainController {
       }
     }
     return $err;
-  }
-
-  public function prepareData($elements) {
-    foreach($elements as $key){
-      if(isset($_POST[$key])){
-        $_POST[$key] = trim($_POST[$key]); //Elimina espacio en blanco (u otro tipo de caracteres) del inicio y el final de la cadena
-        $_POST[$key] = strip_tags($_POST[$key]); //Retira las etiquetas HTML y PHP de un string
-        $_POST[$key] = addslashes($_POST[$key]); //Escapa un string con barras invertidas
-        $_POST[$key] = stripslashes($_POST[$key]); //Quita las barras de un string con comillas escapadas
-        $_POST[$key] = htmlspecialchars($_POST[$key]); //Convierte caracteres especiales en entidades HTML
-      }
-    }
   }
 
 }
