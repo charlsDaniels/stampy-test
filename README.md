@@ -1,6 +1,7 @@
 # stampy-test
 
 Aplicación realizada con los lenguajes PHP, HTML, CSS y Vanilla JS
+
 Para la gestión de la base de datos se utilizó MySQL
 
 Para correr correctamente el sistema de una forma sencilla es necesario:
@@ -16,4 +17,5 @@ Para correr correctamente el sistema de una forma sencilla es necesario:
 El sistema contiene 2 usuarios con los cuales se puede ingresar:
 
 charly -> password: 12345678
+
 daniel -> password: 12345678
